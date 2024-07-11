@@ -12,6 +12,7 @@ import {
 } from '@sitecore-jss/sitecore-jss-nextjs';
 import { ParallaxBackgroundImage } from 'components/NonSitecore/ParallaxBackgroundImage';
 import useVisibility from 'src/hooks/useVisibility';
+import analytics from '../../analyticsInstance';
 
 interface Fields {
   Title: Field<string>;
@@ -27,12 +28,26 @@ export type PromoCtaProps = {
 
 export const Default = (props: PromoCtaProps): JSX.Element => {
   const id = props.params.RenderingIdentifier;
-  const { sitecoreContext } = useSitecoreContext();
-  const isPageEditing = sitecoreContext.pageEditing;
+  const {
+    sitecoreContext: { route, pageEditing },
+  } = useSitecoreContext();
+  const isPageEditing = pageEditing;
   const [isVisible, domRef] = useVisibility();
+  // analytis tracking for Twilio
+  function handleClick() {
+    analytics.track({
+      userId: '123',
+      event: 'Button Clicked',
+      properties: {
+        Page: route.name,
+        Button: props.params.name,
+      },
+    });
+  }
 
   return (
     <div
+      onClick={handleClick}
       className={`component promo-cta ${props.params.styles.trimEnd()}`}
       id={id ? id : undefined}
       ref={domRef}
