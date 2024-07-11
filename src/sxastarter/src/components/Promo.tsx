@@ -1,4 +1,7 @@
 import React from 'react';
+import analytics from '../analyticsInstance';
+import { useSitecoreContext } from '@sitecore-jss/sitecore-jss-nextjs';
+
 import {
   Image as JssImage,
   Link as JssLink,
@@ -30,9 +33,27 @@ const PromoDefaultComponent = (props: PromoProps): JSX.Element => (
 
 export const Default = (props: PromoProps): JSX.Element => {
   const id = props.params.RenderingIdentifier;
+  const {
+    sitecoreContext: { route },
+  } = useSitecoreContext();
+  // analytis tracking for Twilio
+  function handleClick() {
+    analytics.track({
+      userId: '123',
+      event: 'Button Clicked',
+      properties: {
+        Page: route.name,
+        Button: props.params.name,
+      },
+    });
+  }
   if (props.fields) {
     return (
-      <div className={`component promo ${props.params.styles}`} id={id ? id : undefined}>
+      <div
+        onClick={handleClick}
+        className={`component promo ${props.params.styles}`}
+        id={id ? id : undefined}
+      >
         <div className="component-content">
           <div className="field-promoicon">
             <JssImage field={props.fields.PromoIcon} />
