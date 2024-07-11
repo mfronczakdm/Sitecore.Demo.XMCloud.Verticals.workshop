@@ -40,7 +40,7 @@ export const Default = (props: PromoCtaProps): JSX.Element => {
       event: 'Button Clicked',
       properties: {
         Page: route.name,
-        Button: id,
+        Button: props.fields.Title,
       },
     });
   }
